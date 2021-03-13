@@ -8,6 +8,7 @@ var gamestate=home;
 var Time=0;
 var level;
 var hit = 0;
+var hit2=0;
 
 function preload(){
   airimg=loadImage("air.png");
@@ -219,6 +220,9 @@ function setup(){
       playbutton.setCollider("rectangle",0,0,100,30);
      // playbutton.debug=true;
 
+      hit=0;
+      hit2=0;
+
       jungle.visible=false;
       hanuman.visible=false;
       nextlevel.visible=false;
@@ -409,11 +413,17 @@ if(gamestate === "level1") {
    if(hit == 5){
     bigmonster.destroy();
     nextlevel.visible=true;
-    console.log(hit);
    }
-    
-    
- }
+   console.log(hit);
+  }
+
+  if(hit === 5){
+    arrowgroup.setVelocityXEach(0);
+    arrowgroup.destroyEach()
+    monstergroup.setVelocityXEach(0);
+    monstergroup.destroyEach();
+    gadagroup.destroyEach();
+  }
 
  if(mousePressedOver(nextlevel)){
    gamestate="level2";
@@ -470,10 +480,18 @@ if(gamestate=="level2"){
   }
   
 
-  if(tridentgroup.isTouching(monster2group)){
-    gamestate="level2.1";
+ // if(tridentgroup.isTouching(monster2group)){
+ //   gamestate="level2.1";
     
-  }
+ // }
+
+  if(tridentgroup.collide(monster2group)){
+    hit2++;
+ 
+    if(hit2 == 5){
+      gamestate="level2.1"
+    }
+  }  
 
   if(tridentgroup.isTouching(fishmonstergroup)){
     
@@ -992,7 +1010,7 @@ function spawnjunglemonster(){
   monster3.scale=0.5;
   monster3.velocityX=-5;
    monster3.debug=true;
-  monster3.setCollider("circle",0,0,120);
+ // monster3.setCollider("circle",0,0,120);
   monster3.depth=hanuman.depth;
    hanuman.depth+=1;
    
