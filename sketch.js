@@ -1,9 +1,9 @@
 var home=0;
 var instructions=1;
 var instructions2=1.5;
-var gamestate=home;
+//var gamestate=home;
 
-//var gamestate="level2";
+var gamestate="level2.1";
 
 var Time=0;
 var level;
@@ -76,7 +76,7 @@ function preload(){
 
 function setup(){
 
-  createCanvas(800,400);
+  createCanvas(displayWidth,displayHeight);
  
   gadagroup = createGroup();
   monstergroup = createGroup();
@@ -100,7 +100,7 @@ function setup(){
  
   jungle=createSprite(width/2,height/2,20,20);
   jungle.addImage(level1background);
-  jungle.scale=2.1;
+  jungle.scale=4.5;
   jungle.velocityX=-5;
   jungle.visible=false;
  
@@ -122,18 +122,20 @@ function setup(){
  backbutton.addImage(previousB);
  backbutton.scale=0.3;
  
-  bigmonster= createSprite(width-200,height/2,30,30);
+  bigmonster= createSprite(width-0,height/2,30,30);
   bigmonster.addImage(bigmonsterimg);
   bigmonster.visible=false;
   bigmonster.velocityY=3;
  
  sea= createSprite(width/2,height/2,10,10);
  sea.addImage(seaimg);
+ sea.scale=2;
  sea.velocityX=-5;
  sea.visible=false;
  
   sita=createSprite(width/2,height/2);
   sita.addImage(sitaimg);
+  sita.scale=3;
 
  nextlevel=createSprite(200,300,0,0);
  nextlevel.addImage(nextlevelimg);
@@ -168,7 +170,7 @@ function setup(){
  gamewin.addImage(gamewinimg);
  gamewin.visible=false;
 
- restart=createSprite(400,200);
+ restart=createSprite(width/2,height/2);
  restart.addImage(restartimg);
  restart.visible=false;
  restart.scale=0.6;
@@ -177,12 +179,13 @@ function setup(){
  nextbutton.addImage(nextB);
  nextbutton.scale=0.2;
  
- hanuman=createSprite(90,200,20,20);
+ hanuman=createSprite(width/7,height/2,20,20);
  hanuman.addImage(hanumanimg);
- hanuman.scale=1;
- hanuman.setCollider("circle",0,0,30);
+ hanuman.scale=2;
+ hanuman.setCollider("rectangle",0,0,70,30);
+ //hanuman.debug=true;
 
- pause=createSprite(30,350);
+ pause=createSprite(30,height-50);
  pause.addImage(pauseimg);
  pause.scale=0.3;
  pause.visible=false;
@@ -345,6 +348,7 @@ if(gamestate === "level1") {
  if(keyDown("down")) {
    hanuman.y=hanuman.y+10;
  }
+
  
  spawncyclops();
 
@@ -385,7 +389,7 @@ if(gamestate === "level1") {
  
  fill("white");
  textSize(20);
- text("Time:" + Time,270,30);
+ text("Time:" + Time,width/6,30);
 
 // text("Lowest Time:" + Time,100,30);
 
@@ -394,7 +398,7 @@ if(gamestate === "level1") {
  
  if(Time > 500){
    bigmonster.visible=true;
-   bigmonster.x=350;
+   bigmonster.x=width/2;
    bigmonster.setLifetime=50;
    bigmonster.depth=gadagroup.depth;
   
@@ -402,7 +406,7 @@ if(gamestate === "level1") {
    
    if(bigmonster.isTouching(hanuman)){
     // bigmonster.velocityY=0;
-     gamestate=end;
+     gamestate="end1";
      level="first";
      console.log(level);
    }
@@ -530,7 +534,7 @@ if(gamestate=="level2"){
 
   fill("white");
  textSize(20);
- text("Time:" + Time,270,30);
+ text("Time:" + Time,width/6,30);
 
  if(mousePressedOver(pause)){
    gamestate="pause";
@@ -543,10 +547,12 @@ if(gamestate=="level2"){
 if(gamestate== "level2.1"){
 
   Time=Time+Math.round(World.frameCount/150);
+  sea.visible=true;
+  sita.visible=false;  
   sea.velocityX=0;
   hanuman.addImage(hanuman2);
-  hanuman.x=200;
-  hanuman.y=200;
+  hanuman.x=width/4;
+  hanuman.y=height/2;
   monster2group.setVelocityXEach(0);
   tridentgroup.setVelocityXEach(0);
   fishmonstergroup.destroyEach();
@@ -579,22 +585,22 @@ if(gamestate== "level2.1"){
  
   fill("white");
  textSize(20);
- text("Time:" + Time,270,30);
+ text("Time:" + Time,width/6,30);
 
-// text("Lowest Time:" + Time,100,30);
+
 }
 
 if(gamestate== "level2.2"){
 
   Time=Time+Math.round(World.frameCount/150);
   console.log(gamestate);
-  
+  sea.visible=false;
   sea.velocityX=0;
   hanuman.visible=false;
   sita.visible=true;
   sita.x=width/2+50;
   sita.y=height/2;
-  sita.scale=1.6;
+  sita.scale=2.5;
   monster2group.setVelocityXEach(0);
   monster2group.destroyEach();
   tridentgroup.setVelocityXEach(0);
@@ -626,8 +632,8 @@ if(gamestate== "level2.2"){
 if(gamestate=="level3"){
 
   Time=Time+Math.round(World.frameCount/150);
-
- mountain.scale=1.5;
+ sita.visible=false;
+ mountain.scale=2.5;
  mountain.visible=true;
  hanuman.visible=true;
  hanuman.addImage(hanumansimg);
@@ -650,6 +656,8 @@ if(gamestate=="level3"){
  if(keyDown(DOWN_ARROW)){
    hanuman.y=hanuman.y+10;
  }
+
+
 
  if(mountain.x < 0){
    mountain.x=200;
@@ -675,10 +683,18 @@ if(gamestate=="level3"){
     gamestate="end3";
   }
 
-  if(gadagroup.isTouching(monster3group) && Time > 5000){
-    gamestate="level3.1";
+  if(gadagroup.isTouching(monster3group) ){
+   
     monster3group.destroyEach();
     gadagroup.destroyEach();
+
+  }
+
+  if(gadagroup.isTouching(monster3group) && Time> 6000){
+   gamestate="level3.1"
+    monster3group.destroyEach();
+    gadagroup.destroyEach();
+
   }
 
   if(gadagroup.isTouching(swordgroup)){
@@ -695,7 +711,7 @@ if(gamestate=="level3"){
 
  fill("white");
  textSize(20);
- text("Time:" + Time,270,30);
+ text("Time:" + Time,width/6,30);
 
  //text("Lowest Time:" + Time,100,30);
 }
@@ -729,7 +745,7 @@ if(gamestate == "level3.1"){
 
  fill("white");
  textSize(20);
- text("Time:" + Time,270,30);
+ text("Time:" + Time,width/6,30);
 
 // text("Lowest Time:" + Time,100,30);
 }
@@ -843,7 +859,7 @@ if(gamestate == "end1" ){
     
     fill("white");
     textSize(20);
-    text("Time:" + Time,270,30);
+    text("Time:" + Time,width/6,30);
 }
 
 if(gamestate == "end2"){
@@ -871,14 +887,14 @@ if(gamestate == "end2"){
 
   fill("white");
   textSize(20);
-  text("Time:" + Time,270,30);
+  text("Time:" + Time,width/6,30);
  }
 
  if(gamestate=="end3"){
    mountain.velocityX=0;
-   monster3group.destroyEach();
+   monster3group.setVelocityXEach(0);
    gadagroup.destroyEach();
-   gameover.y=height-30;
+   gameover.y=height-100;
    gameover.visible=true;
 
    
@@ -897,7 +913,7 @@ if(gamestate == "end2"){
 
    fill("white");
    textSize(20);
-   text("Time:" + Time,270,30);
+   text("Time:" + Time,width/6,30);
  }
 
 
@@ -930,7 +946,7 @@ function spawncyclops() {
 }
 
 function spawngada() {
-  var gada=createSprite(90,hanuman.y,0,0);
+  var gada=createSprite(hanuman.x,hanuman.y,0,0);
   gada.addImage(gadaimg);
   gada.scale=0.35;
   gada.velocityX=5;
@@ -943,7 +959,7 @@ function spawngada() {
 
 function spawnseamonster(){
   if(World.frameCount%150==0) {
-   var monster2=createSprite(800,random(200,300),0,0);
+   var monster2=createSprite(width,height-200,0,0);
    monster2.addImage(seadragon);
    monster2.scale=0.25;
   // monster2.setLifetime=100;
@@ -981,7 +997,9 @@ function spawnfishmonster(){
     var poison=createSprite(fishmonster.x,fishmonster.y);
     poison.addImage(poisonimg);
     poison.scale=0.5;
-    poison.velocityY=-10;   
+    poison.velocityY=-10;  
+    poison.debug=true; 
+    poison.setCollider("rectangle",0,0,80,80);
     //poison.lifetime=800/10;
 
     fishmonstergroup.add(fishmonster);
@@ -1005,21 +1023,23 @@ function spawntrident(){
 
 function spawnjunglemonster(){
   if(World.frameCount%150==0) {
-   var monster3=createSprite(800,random(200,300),0,0);
+   var monster3=createSprite(width,random(200,300),0,0);
   monster3.addImage(monster3img);
   monster3.scale=0.5;
   monster3.velocityX=-5;
-   monster3.debug=true;
+  // monster3.debug=true;
  // monster3.setCollider("circle",0,0,120);
   monster3.depth=hanuman.depth;
    hanuman.depth+=1;
+
+   if(World.frameCount % 80 === 0){
+    var sword= createSprite(monster3.x-100,monster3.y,10,10);
+    sword.addImage(swordimage);
+    sword.scale=0.5;
+    sword.velocityX=-12;
+    swordgroup.add(sword);
+   }
    
-   var sword= createSprite(monster3.x-100,monster3.y,10,10);
-   sword.addImage(swordimage);
-   sword.scale=0.5;
-   sword.velocityX=-12;
-   
-   swordgroup.add(sword);
   monster3group.add(monster3);
    
   }
