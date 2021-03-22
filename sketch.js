@@ -11,6 +11,8 @@ var hit = 0;
 var hit2=0;
 var count=0;
 
+var bigmonster;
+
 function preload(){
   airimg=loadImage("air.png");
   arrowimg=loadImage("arrow.png");
@@ -74,13 +76,13 @@ function preload(){
 }
 
 
-
 function setup(){
 
   createCanvas(displayWidth,displayHeight);
  
   gadagroup = createGroup();
   monstergroup = createGroup();
+  bigmonstergroup = createGroup();
   gada2group = createGroup();
   arrowgroup = createGroup();
   monster2group= createGroup();
@@ -123,10 +125,7 @@ function setup(){
  backbutton.addImage(previousB);
  backbutton.scale=0.3;
  
-  bigmonster= createSprite(width-0,height/2,30,30);
-  bigmonster.addImage(bigmonsterimg);
-  bigmonster.visible=false;
-  bigmonster.velocityY=3;
+ 
  
  sea= createSprite(width/2,height/2,10,10);
  sea.addImage(seaimg);
@@ -205,9 +204,9 @@ function setup(){
   background("white");
 
   edges=createEdgeSprites();
-  bigmonster.bounceOff(edges[2]);
-  bigmonster.bounceOff(edges[3]);
-
+ // bigmonstergroup.bounceOff(edges[2]);
+  //bigmonstergroup.bounceOff(edges[3]);
+  
   hanuman.collide(edges[2]);
   hanuman.collide(edges[3]);
 
@@ -245,7 +244,7 @@ function setup(){
       sea.visible=false;
       jungle.visible=false;
       mountain.visible=false;
-      bigmonster.visible=false;
+     // bigmonster.visible=false;
       gamewin.visible=false;
 
     fishmonstergroup.destroyEach();
@@ -292,6 +291,7 @@ function setup(){
     nextlevel.visible=false;
     nextlevel2.visible=false;
     nextlevel3.visible=false;
+    bigmonstergroup.setVisibleEach(false);
 
     fishmonstergroup.destroyEach();
     poisongroup.destroyEach();
@@ -329,18 +329,19 @@ if(mousePressedOver(backbutton) ) {
 if(gamestate === "level1") {
    
   //sound.play();
-  Time=Time+Math.round(World.frameCount/150);
+  Time=Time+Math.round(getFrameRate()/60);
   //console.log(World.frameRate);
  
   menu.visible=false;
   templeimage.visible=false;
   jungle.visible=true;
   hanuman.visible=true;
+
+  hanuman.addImage(hanumanimg);
  
   playbutton.visible=false;
   pause.visible=true;
   resume.visible=true;
-
  
  //reset the background
  if(jungle.x<130) {
@@ -363,9 +364,6 @@ if(gamestate === "level1") {
    spawngada();
    
  }
- 
-
- 
 
  if(monstergroup.isTouching(gadagroup)) {
      gadagroup.destroyEach();
@@ -390,6 +388,40 @@ if(gamestate === "level1") {
    arrowgroup.destroyEach();
    gadagroup.destroyEach();
  }
+ console.log(gamestate);
+
+ if(Time >= 50 && World.frameCount % 100 == 0){
+  
+  spawnbigmonster();
+  console.log(World.frameCount);
+  
+  if(bigmonster.isTouching(hanuman)){
+   // bigmonster.velocityY=0;
+    gamestate="end1";
+    level="first";
+    console.log(level);
+  }
+}
+
+if(gadagroup.collide(bigmonstergroup)){
+  hit++;
+
+  if(hit == 5){
+   bigmonstergroup.destroyEach();
+   bigmonstergroup.setVisibleEach(false);
+   nextlevel.visible=true;
+  }
+  console.log(hit);
+ }
+
+ if(hit === 5){
+   bigmonstergroup.destroyEach();
+   arrowgroup.setVelocityXEach(0);
+   arrowgroup.destroyEach()
+   monstergroup.setVelocityXEach(0);
+   monstergroup.destroyEach();
+   gadagroup.destroyEach();
+ }
  
  drawSprites();
  
@@ -401,41 +433,6 @@ if(gamestate === "level1") {
  textSize(30);
  text("Monster War",width/2-100,30);
 
-
-
- 
- if(Time > 500){
-   bigmonster.visible=true;
-   bigmonster.x=width/2;
-   bigmonster.setLifetime=50;
-   bigmonster.depth=gadagroup.depth;
-  
-   //console.log(bigmonster.velocityY);
-   
-   if(bigmonster.isTouching(hanuman)){
-    // bigmonster.velocityY=0;
-     gamestate="end1";
-     level="first";
-     console.log(level);
-   }
- }
- if(gadagroup.collide(bigmonster)){
-   hit++;
-
-   if(hit == 5){
-    bigmonster.destroy();
-    nextlevel.visible=true;
-   }
-   console.log(hit);
-  }
-
-  if(hit === 5){
-    arrowgroup.setVelocityXEach(0);
-    arrowgroup.destroyEach()
-    monstergroup.setVelocityXEach(0);
-    monstergroup.destroyEach();
-    gadagroup.destroyEach();
-  }
 
  if(mousePressedOver(nextlevel)){
    gamestate="level2";
@@ -451,7 +448,7 @@ if(gamestate === "level1") {
  
 if(gamestate=="level2"){
 
-  Time=Time+Math.round(World.frameCount/150);
+  Time=Time+Math.round(getFrameRate()/60);
 
   sea.visible=true; 
   hanuman.visible=true;
@@ -462,6 +459,7 @@ if(gamestate=="level2"){
   sita.visible=false;
 
   monstergroup.destroyEach();
+  bigmonstergroup.destroyEach();
 
   if(sea.x<0){
     sea.x=200;
@@ -501,6 +499,7 @@ if(gamestate=="level2"){
     hit2++;
  
     if(hit2 == 5){
+      airgroup.destroyEach();
       gamestate="level2.1"
     }
   }  
@@ -559,7 +558,8 @@ if(gamestate=="level2"){
 
 if(gamestate== "level2.1"){
 
-  Time=Time+Math.round(World.frameCount/150);
+  Time=Time+Math.round(getFrameRate()/60);
+
   sea.visible=true;
   sita.visible=false;  
   sea.velocityX=0;
@@ -605,7 +605,7 @@ if(gamestate== "level2.1"){
 
 if(gamestate== "level2.2"){
 
-  Time=Time+Math.round(World.frameCount/150);
+Time=Time+Math.round(getFrameRate()/60);
   console.log(gamestate);
   sea.visible=false;
   sea.velocityX=0;
@@ -644,7 +644,7 @@ if(gamestate== "level2.2"){
 
 if(gamestate=="level3"){
 
- Time=Time+Math.round(World.frameCount/150);
+ Time=Time+Math.round(getFrameRate()/60);
  sita.visible=false;
  mountain.scale=2.5;
  mountain.visible=true;
@@ -879,10 +879,7 @@ if(gamestate == "end1" ){
       jungle.velocityX=-8;
       gamestate=home;
       Time=0;
-      if(localStorage["lowestTime"] < Time || Time==0) {
-        localStorage["lowestTime"]=Time;
-        console.log("lowestTime="+localStorage["lowestTime"])
-      }
+      
     }
 
     drawSprites();
@@ -908,10 +905,7 @@ if(gamestate == "end2"){
     sea.velocityX=-8;
     gamestate=home;
     Time=0;
-    if(localStorage["lowestTime"] < Time || Time==0) {
-      localStorage["lowestTime"]=Time;
-      console.log("lowestTime="+localStorage["lowestTime"])
-    }
+   
   }
 
   drawSprites();
@@ -951,6 +945,19 @@ if(gamestate == "end2"){
 
 }
 //function draw ends here
+
+function spawnbigmonster(){
+  bigmonster= createSprite(width/2,height/2,30,30);
+  bigmonster.addImage(bigmonsterimg);
+  //bigmonster.visible=false;
+  bigmonster.velocityY=random(2,8);
+  bigmonster.scale=0.8;
+  bigmonster.lifetime=350;
+  bigmonstergroup.add(bigmonster);
+  bigmonstergroup.bounceOff(edges[2]);
+  bigmonstergroup.bounceOff(edges[3]);
+  console.log("big monster coming");
+}
 
 function spawncyclops() {
   if(World.frameCount%80==0) {
