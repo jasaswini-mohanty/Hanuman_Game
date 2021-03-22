@@ -1,14 +1,15 @@
 var home=0;
 var instructions=1;
 var instructions2=1.5;
-var gamestate=home;
+//var gamestate=home;
 
-//var gamestate="level2.1";
+var gamestate="level3";
 
 var Time=0;
 var level;
 var hit = 0;
 var hit2=0;
+var count=0;
 
 function preload(){
   airimg=loadImage("air.png");
@@ -213,6 +214,9 @@ function setup(){
   monstergroup.bounceOff(edges[2]);
   monstergroup.bounceOff(edges[3]);
 
+  monster3group.bounceOff(edges[2]);
+  monster3group.bounceOff(edges[3]);
+
   //home page starts 
  if(gamestate==home) {
       
@@ -242,6 +246,7 @@ function setup(){
       jungle.visible=false;
       mountain.visible=false;
       bigmonster.visible=false;
+      gamewin.visible=false;
 
     fishmonstergroup.destroyEach();
     poisongroup.destroyEach();
@@ -275,6 +280,7 @@ function setup(){
   if(gamestate == instructions ) {
     background("blue");
     
+    gamewin.visible=false;
     pause.visible=false;
     resume.visible=false;
     playbutton.visible=false;
@@ -391,7 +397,9 @@ if(gamestate === "level1") {
  textSize(20);
  text("Time:" + Time,width/6,30);
 
-// text("Lowest Time:" + Time,100,30);
+ fill("red");
+ textSize(30);
+ text("Monster War",width/2-100,30);
 
 
 
@@ -536,6 +544,11 @@ if(gamestate=="level2"){
  textSize(20);
  text("Time:" + Time,width/6,30);
 
+ 
+ fill("red");
+ textSize(30);
+ text("Sita Mata",width/2-100,30);
+
  if(mousePressedOver(pause)){
    gamestate="pause";
    level="second"
@@ -631,7 +644,7 @@ if(gamestate== "level2.2"){
 
 if(gamestate=="level3"){
 
-  Time=Time+Math.round(World.frameCount/150);
+ Time=Time+Math.round(World.frameCount/150);
  sita.visible=false;
  mountain.scale=2.5;
  mountain.visible=true;
@@ -668,7 +681,8 @@ if(gamestate=="level3"){
   swordgroup.destroyEach();
 }
 
- spawnjunglemonster();
+ spawnjunglemonster()
+ count++;
 
 
  if(keyDown("a")){
@@ -683,28 +697,39 @@ if(gamestate=="level3"){
     gamestate="end3";
   }
 
-  if(gadagroup.isTouching(monster3group) ){
+ /* if(gadagroup.isTouching(monster3group) ){
    
     monster3group.destroyEach();
     gadagroup.destroyEach();
 
   }
+  */
 
-  if(gadagroup.isTouching(monster3group) && Time> 6000){
+  if(gadagroup.isTouching(monster3group) && Time> 600){
    gamestate="level3.1"
     monster3group.destroyEach();
     gadagroup.destroyEach();
-
+console.log(gamestate)
   }
 
   if(gadagroup.isTouching(swordgroup)){
     gadagroup.destroyEach();
     swordgroup.destroyEach();
   }
+  
 
   if(mousePressedOver(pause)){
     gamestate="pause";
     level="third";
+  }
+
+  if(count % 50 ==0){
+    monster3group.setVisibleEach(true);
+    console.log("visible")
+  }
+  else{
+    monster3group.setVisibleEach(false);
+    console.log(" not visible")
   }
 
  drawSprites(); 
@@ -713,7 +738,11 @@ if(gamestate=="level3"){
  textSize(20);
  text("Time:" + Time,width/6,30);
 
- //text("Lowest Time:" + Time,100,30);
+ 
+ fill("red");
+ textSize(30);
+ text("SANJEEVANI HUNT",width/2-100,30);
+
 }
 
 if(gamestate == "level3.1"){
@@ -721,9 +750,9 @@ if(gamestate == "level3.1"){
   hanuman.visible=false;
 
   ramlaxman.visible=true;
-  ramlaxman.scale=1.7;
+  ramlaxman.scale=3;
 
-  gamewin.scale=2;
+  gamewin.scale=2.5;
   gamewin.x=100
   gamewin.y=100;
   gamewin.visible=true;
@@ -734,8 +763,9 @@ if(gamestate == "level3.1"){
 
   
 
- // restart.visible=true;
-  restart.x=80;
+  restart.visible=true;
+  restart.x=width/2;
+  restart.y=height/2+100;
   restart.scale=0.5;
 
   if(mousePressedOver(restart)){
@@ -868,6 +898,7 @@ if(gamestate == "end2"){
   gameover.visible=true;
   fishmonstergroup.setVelocityXEach(0);
   poisongroup.setVelocityYEach(0);
+  tridentgroup.setVelocityXEach(0);
   
   pause.visible=false;
   resume.visible=false;
@@ -1023,21 +1054,23 @@ function spawntrident(){
 
 function spawnjunglemonster(){
   if(World.frameCount%150==0) {
-   var monster3=createSprite(width,random(200,300),0,0);
+   var monster3=createSprite(random(width-500,width-200),random(200,300),0,0);
   monster3.addImage(monster3img);
   monster3.scale=0.5;
   monster3.velocityX=-5;
+  monster3.velocityY=-5;
   // monster3.debug=true;
  // monster3.setCollider("circle",0,0,120);
   monster3.depth=hanuman.depth;
    hanuman.depth+=1;
-
-   if(World.frameCount % 80 === 0){
+  
+   if(World.frameCount % 100 === 0){
     var sword= createSprite(monster3.x-100,monster3.y,10,10);
     sword.addImage(swordimage);
     sword.scale=0.5;
     sword.velocityX=-12;
     swordgroup.add(sword);
+    console.log("test");
    }
    
   monster3group.add(monster3);
