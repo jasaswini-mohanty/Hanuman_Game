@@ -1,9 +1,9 @@
 var home=0;
 var instructions=1;
 var instructions2=1.5;
-//var gamestate=home;
+var gamestate=home;
 
-var gamestate="level3";
+//var gamestate="level3";
 
 var Time=0;
 var level;
