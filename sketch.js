@@ -11,7 +11,8 @@ var hit = 0;
 var hit2=0;
 var count=0;
 
-var bigmonster;
+
+
 
 function preload(){
   airimg=loadImage("air.png");
@@ -104,7 +105,7 @@ function setup(){
   jungle=createSprite(width/2,height/2,20,20);
   jungle.addImage(level1background);
   jungle.scale=4.5;
-  jungle.velocityX=-5;
+  jungle.velocityX=-10;
   jungle.visible=false;
  
   //nightbackground=createSprite(width/2,height/2,width,100);
@@ -307,10 +308,10 @@ function setup(){
     text("-Press play to start game and complete 3 levels to win.",width/5,50);
     text("-Press up and down arrow to move Hanumanji up and down ",width/5,100);
     text("-Press a to shoot weapon at enemy",width/5,150);
-    text("-press next icon to go to the next level",width/5,200);
+    text("-Press next icon to go to the next level",width/5,200);
     text("-At level 2 press space key to shoot air and destroy the fireballs.",width/5,250);
-    text("-At level 3 press space key to throw sheild and destroy the swords.",width/5,300);
-    text("-less Time will make you faster player.",width/5,350);
+    text("-At level 3 press space key to throw shield and destroy the swords.",width/5,300);
+    text("-Less Time will make you faster player.",width/5,350);
    
     
     drawSprites();
@@ -390,12 +391,12 @@ if(gamestate === "level1") {
  }
  console.log(gamestate);
 
- if(Time >= 50 && World.frameCount % 100 == 0){
+ if(Time >= 650 && World.frameCount % 100 == 0){
   
   spawnbigmonster();
   console.log(World.frameCount);
   
-  if(bigmonster.isTouching(hanuman)){
+  if(bigmonstergroup.isTouching(hanuman)){
    // bigmonster.velocityY=0;
     gamestate="end1";
     level="first";
@@ -473,7 +474,15 @@ if(gamestate=="level2"){
       hanuman.y=hanuman.y+10;
     }
 
-    if(Time > 100){
+    if(keyDown("left")) {
+      hanuman.x=hanuman.x-30;
+    }
+
+    if(keyDown("right")) {
+      hanuman.x=hanuman.x+30;
+    }
+
+    if(Time > 2000){
       spawnseamonster();
     }
 
@@ -705,7 +714,7 @@ if(gamestate=="level3"){
   }
   */
 
-  if(gadagroup.isTouching(monster3group) && Time> 600){
+  if(gadagroup.isTouching(monster3group) && Time> 5000){
    gamestate="level3.1"
     monster3group.destroyEach();
     gadagroup.destroyEach();
@@ -723,7 +732,7 @@ console.log(gamestate)
     level="third";
   }
 
-  if(count % 50 ==0){
+  if(count % 250 ==0){
     monster3group.setVisibleEach(true);
     console.log("visible")
   }
@@ -785,7 +794,7 @@ if(gamestate=="pause"){
     
   if(level=="first"){
     jungle.visible=true;
-    bigmonster.velocityX=0;
+    bigmonstergroup.setVelocityXEach(0);
     gadagroup.setVelocityXEach(0);
     monstergroup.setVelocityXEach(0);
     monstergroup.setVelocityYEach(0);
@@ -824,7 +833,7 @@ if(mousePressedOver(resume) && gamestate=="pause"){
     monstergroup.destroyEach();
     gadagroup.destroyEach();
     arrowgroup.destroyEach();
-    bigmonster.destroy();
+    bigmonstergroup.destroyEach();
     jungle.velocityX=-5;
     gamestate="level1";
     
@@ -863,12 +872,12 @@ if(gamestate == "end1" ){
     jungle.visible=true;
     hanuman.visible=true;
     jungle.velocityX=0;
-    bigmonster.velocityY=0;
+    bigmonstergroup.velocityY=0;
     monstergroup.setVelocityXEach(0);
     monstergroup.setVelocityYEach(0);
     arrowgroup.destroyEach();
     gameover.visible=true;
-    bigmonster.destroy();
+    bigmonstergroup.destroyEach();
 
     pause.visible=false;
     resume.visible=false;
